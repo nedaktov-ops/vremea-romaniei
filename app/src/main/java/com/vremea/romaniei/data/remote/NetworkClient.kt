@@ -39,8 +39,15 @@ object NetworkClient {
         .client(okHttpClient)
         .build()
 
+    // MeteoAlarm: feed URL varies by country.
+    // For Romania (ro), the legacy Atom feed is at:
+    // https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-romania
+    // But this RSS/XML feed requires parsing. The correct base + path
+    // combination is set here; the MeteoAlarmApi interface must match.
+    // As of 2025, the working Atom URL is:
+    // https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-romania
     private val meteoAlarmRetrofit: Retrofit = Retrofit.Builder()
-        .baseUrl("https://meteoalarm-legacy-atom-romania/")
+        .baseUrl("https://feeds.meteoalarm.org/")
         .client(okHttpClient)
         .build()
 

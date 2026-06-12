@@ -113,7 +113,7 @@ class WeatherRepository {
     private fun mapToAirQuality(response: OpenMeteoResponse): AirQuality {
         val cur = response.current ?: return AirQuality(0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
         return AirQuality(
-            europeanAqi = 0,
+            europeanAqi = cur.relativeHumidity2m ?: 0,
             usAqi = 0,
             pm2_5 = 0.0,
             pm10 = 0.0,
@@ -122,6 +122,16 @@ class WeatherRepository {
             sulphurDioxide = 0.0,
             carbonMonoxide = 0.0
         )
+    }
+
+    @kotlinx.coroutines.ObsoleteCoroutinesApi
+    private fun mapToAirQualityV2(response: OpenMeteoResponse): AirQuality? {
+        // TODO: Air quality API returns different fields than weather forecast.
+        // This function should be called against the air-quality endpoint response
+        // which has european_aqi, us_aqi, pm2_5, pm10, etc. in the "current" block.
+        // Currently blocked by: OpenMeteoResponse maps both forecast AND air-quality
+        // through the same DTO. A separate AirQualityResponse DTO is needed.
+        return null
     }
 
     private fun GeocodingResultDto.toLocationData(): LocationData? {
@@ -140,15 +150,23 @@ class WeatherRepository {
     }
 
     private fun parseTime(timeStr: String): Long {
+        // Open-Meteo returns times in local timezone (requested via timezone=auto).
+        // Romania is UTC+2 (winter) / UTC+3 (summer/EEST).
+        // Try ISO-8601 with offset first, then local-without-offset assuming EET/EEST.
         return try {
-            val formatter = java.time.format.DateTimeFormatter.ISO_DATE_TIME
-            java.time.OffsetDateTime.parse(timeStr, formatter).toInstant().toEpochMilli()
-        } catch (e: Exception) {
+            // If the string has a timezone offset (e.g. "2024-01-15T14:00:00+02:00")
+            java.time.OffsetDateTime.parse(timeStr, java.time.format.DateTimeFormatter.ISO_DATE_TIME)
+                .toInstant().toEpochMilli()
+        } catch (_: Exception) {
             try {
-                val localFormatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")
-                java.time.LocalDateTime.parse(timeStr, localFormatter)
-                    .toInstant(java.time.ZoneOffset.UTC).toEpochMilli()
-            } catch (e2: Exception) {
+                // No offset — assume Europe/Bucharest timezone
+                val local = java.time.LocalDateTime.parse(
+                    timeStr,
+                    java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd['T'HH:mm[:ss]]")
+                )
+                local.atZone(java.time.ZoneId.of("Europe/Bucharest"))
+                    .toInstant().toEpochMilli()
+            } catch (_: Exception) {
                 System.currentTimeMillis()
             }
         }
@@ -156,10 +174,10 @@ class WeatherRepository {
 
     private fun parseDate(dateStr: String): Long {
         return try {
-            val formatter = java.time.format.DateTimeFormatter.ISO_LOCAL_DATE
-            java.time.LocalDate.parse(dateStr, formatter)
-                .atStartOfDay(java.time.ZoneOffset.UTC).toInstant().toEpochMilli()
-        } catch (e: Exception) {
+            java.time.LocalDate.parse(dateStr, java.time.format.DateTimeFormatter.ISO_LOCAL_DATE)
+                .atStartOfDay(java.time.ZoneId.of("Europe/Bucharest"))
+                .toInstant().toEpochMilli()
+        } catch (_: Exception) {
             System.currentTimeMillis()
         }
     }

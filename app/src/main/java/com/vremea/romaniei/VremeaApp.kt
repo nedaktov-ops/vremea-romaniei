@@ -5,12 +5,13 @@ import androidx.work.Configuration
 import androidx.work.WorkManager
 import com.vremea.romaniei.data.local.BootReceiver
 
-class VremeaApp : Application(), Configuration.Provider {
+class VremeaApp : Application() {
     override fun onCreate() {
         super.onCreate()
-        WorkManager.initialize(this, workManagerConfiguration)
+        val config = Configuration.Builder()
+            .setMinimumLoggingLevel(android.util.Log.INFO)
+            .build()
+        WorkManager.initialize(this, config)
         BootReceiver.scheduleWorkers(this)
     }
-    override val workManagerConfiguration: Configuration
-        get() = Configuration.Builder().setMinimumLoggingLevel(android.util.Log.INFO).build()
 }

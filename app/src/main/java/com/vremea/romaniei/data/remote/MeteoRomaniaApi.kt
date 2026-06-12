@@ -15,8 +15,11 @@ interface AnmApi {
     suspend fun getCityForecasts(): Response<ResponseBody>
 }
 
+// MeteoAlarm legacy Atom feed: returns XML with <feed><entry> entries.
+// The suffix after the base URL is the country code.
+// Romania = "ro" → full path: feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-romania
 interface MeteoAlarmApi {
-    @GET
+    @GET("feeds/meteoalarm-legacy-atom-romania")
     suspend fun getAlerts(): Response<ResponseBody>
 }
 

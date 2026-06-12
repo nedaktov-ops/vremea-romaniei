@@ -62,8 +62,8 @@ data class DailyWeather(
     val windSpeedMax: Double,
     val windGustsMax: Double,
     val windDirectionDominant: Int,
-    val humidityMean: Int?,
-    val pressureMean: Double?,
+    val humidityMean: Int? = null,
+    val pressureMean: Double? = null,
     val uvIndexMax: Double,
     val description: String
 )

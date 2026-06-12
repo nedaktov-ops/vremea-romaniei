@@ -97,9 +97,8 @@ dependencies {
     // WorkManager for background updates
     implementation("androidx.work:work-runtime-ktx:2.11.1")
 
-    // MapLibre for weather maps (with Compose wrapper)
+    // MapLibre for weather maps (uses native Android SDK via AndroidView)
     implementation("org.maplibre.gl:android-sdk:13.2.0")
-    implementation("org.maplibre.gl:maplibre-compose:0.13.0")
 
     // Lottie for animations
     implementation("com.airbnb.android:lottie-compose:6.6.2")

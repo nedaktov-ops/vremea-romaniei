@@ -18,7 +18,9 @@ object NetworkClient {
     }
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY
+        // Only log headers in release; full body in debug
+        level = if (com.vremea.romaniei.BuildConfig.DEBUG)
+            HttpLoggingInterceptor.Level.HEADERS else HttpLoggingInterceptor.Level.NONE
     }
 
     private val okHttpClient = OkHttpClient.Builder()

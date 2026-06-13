@@ -8,11 +8,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalConfiguration
 import com.vremea.romaniei.domain.model.WeatherData
 
 @Composable
 fun WeatherDetailRow(weather: WeatherData) {
     val current = weather.current ?: return
+    val currentLocale = LocalConfiguration.current.locales[0]
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -76,7 +78,7 @@ fun WeatherDetailRow(weather: WeatherData) {
                     if (sunrise != null) {
                         Text(
                             text = java.text.SimpleDateFormat(
-                                "HH:mm", java.util.Locale.getDefault()
+                                "HH:mm", currentLocale
                             ).format(java.util.Date(sunrise)),
                             style = MaterialTheme.typography.bodyLarge,
                             fontWeight = FontWeight.SemiBold
@@ -89,7 +91,7 @@ fun WeatherDetailRow(weather: WeatherData) {
                     if (sunset != null) {
                         Text(
                             text = java.text.SimpleDateFormat(
-                                "HH:mm", java.util.Locale.getDefault()
+                                "HH:mm", currentLocale
                             ).format(java.util.Date(sunset)),
                             style = MaterialTheme.typography.bodyLarge,
                             fontWeight = FontWeight.SemiBold

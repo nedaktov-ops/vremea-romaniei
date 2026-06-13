@@ -9,6 +9,7 @@
 .cxx
 local.properties
 /app/build
+keystore.jks
 *.keystore
 # Token files — never commit
 *github token*

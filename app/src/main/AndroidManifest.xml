@@ -29,11 +29,9 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".data.local.WeatherUpdateWorker"
-            android:exported="false"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-
+        <!-- WorkManager workers (WeatherUpdateWorker, AlertWorker) are NOT
+             declared here — WorkManager handles them internally via its own
+             system service. Only BroadcastReceivers go in the manifest. -->
         <receiver
             android:name=".data.local.BootReceiver"
             android:exported="true">

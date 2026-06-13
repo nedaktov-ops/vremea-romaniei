@@ -10,6 +10,21 @@ jobs:
       - uses: actions/setup-java@v4
         with: { distribution: 'temurin', java-version: '17' }
       - uses: gradle/actions/setup-gradle@v3
+
+      # Install Android SDK platform 35
+      - run: echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-35" || true
+
+      # Decode keystore from GitHub secret
+      - name: Decode Keystore
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > app/keystore.jks
+
       - run: ./gradlew assembleRelease
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
       - uses: softprops/action-gh-release@v1
-        with: { files: app/build/outputs/apk/release/*.apk, generate_release_notes: true }
+        with:
+          files: app/build/outputs/apk/release/*.apk
+          generate_release_notes: true

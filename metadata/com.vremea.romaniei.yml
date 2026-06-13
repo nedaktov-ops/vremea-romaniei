@@ -1,0 +1,82 @@
+---
+# VremeaRomâniei — IzzyOnDroid metadata
+# See: https://gitlab.com/IzzyOnDroid/repo/-/blob/master/METADATA.md
+Categories:
+  - Weather
+  - Science & Education
+License: GPL-3.0-only
+AuthorName: NedAktov
+AuthorEmail: nedaktov@users.noreply.github.com
+SourceCode: https://github.com/nedaktov-ops/vremea-romaniei
+IssueTracker: https://github.com/nedaktov-ops/vremea-romaniei/issues
+Changelog: https://github.com/nedaktov-ops/vremea-romaniei/releases
+
+AutoName: VremeaRomâniei
+Name:
+  en: VremeaRomâniei
+  ro: VremeaRomâniei
+
+Summary:
+  en: Weather app for Romania with offline cache, radar map, and severe alerts
+  ro: Aplicație meteo pentru România cu cache offline, hartă radar și alerte severe
+
+Description:
+  en: |
+    A privacy-first, 100% free Android weather app specifically designed for
+    Romania. No ads, no tracking, no Firebase.
+
+    Features:
+    * Current weather conditions (temperature, humidity, wind, pressure, UV)
+    * Hourly forecast for the next 24 hours
+    * 16-day daily forecast
+    * Romanian weather warnings from ANM (National Meteorological Administration)
+    * EU cross-border alerts via MeteoAlarm
+    * Interactive MapLibre map with RainViewer animated radar overlay
+    * Background notifications for severe weather alerts (every 2 hours)
+    * Full offline support with Room database caching
+    * Romanian and English UI (auto-detect or manual switch)
+    * Metric units (°C, km/h, hPa, mm, km)
+
+    Data Sources (all free, no API keys required):
+    * Open-Meteo — primary weather data
+    * ANM (meteoromania.ro) — Romanian official warnings
+    * MeteoAlarm — EU weather alerts
+    * RainViewer — animated weather radar tiles
+    * OpenStreetMap / MapLibre — map tiles
+
+    Permissions:
+    * INTERNET — weather data from APIs
+    * ACCESS_FINE_LOCATION — current location weather (optional)
+    * POST_NOTIFICATIONS — severe weather alerts (optional, Android 13+)
+    * FOREGROUND_SERVICE — background weather updates
+    * RECEIVE_BOOT_COMPLETED — reschedule background updates after reboot
+
+  ro: |
+    O aplicație meteo gratuită 100%, axată pe confidențialitate, special
+    concepută pentru România. Fără reclame, fără urmărire, fără Firebase.
+
+    Caracteristici:
+    * Vremea curentă (temperatură, umiditate, vânt, presiune, UV)
+    * Prognoză orară pentru următoarele 24 de ore
+    * Prognoză zilnică pe 16 zile
+    * Avertizări ANM (Administrația Națională de Meteorologie)
+    * Alerte transfrontaliere UE prin MeteoAlarm
+    * Hartă interactivă MapLibre cu suprapunere radar RainViewer animată
+    * Notificări în fundal pentru alerte meteo severe (la fiecare 2 ore)
+    * Suport offline complet cu cache în Room database
+    * Interfață în română și engleză (detectare automată sau manual)
+    * Unități metrice (°C, km/h, hPa, mm, km)
+
+    Surse de date (toate gratuite, fără chei API):
+    * Open-Meteo — date meteo principale
+    * ANM (meteoromania.ro) — avertizări oficiale românești
+    * MeteoAlarm — alerte meteo UE
+    * RainViewer — hărți radar animate
+    * OpenStreetMap / MapLibre — hărți de bază
+
+    Permisiuni:
+    * INTERNET — date meteo de la API-uri
+    * ACCESS_FINE_LOCATION — vremea la locația curentă (opțional)
+    * POST_NOTIFICATIONS — alerte meteo severe (opțional, Android 13+)
+    * FOREGROUND_SERVICE — actualizări meteo în fundal
+    * RECEIVE_BOOT_COMPLETED — reprogramare actualizări după repornire

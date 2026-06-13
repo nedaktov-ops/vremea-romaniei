@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Layers
 import androidx.compose.material.icons.filled.MyLocation
@@ -17,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.foundation.layout.size
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -24,6 +24,15 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.vremea.romaniei.data.location.LocationHelper
 import kotlinx.coroutines.tasks.await
+import org.maplibre.android.MapLibre
+import org.maplibre.android.maps.MapView
+import org.maplibre.android.maps.MapLibreMap
+import org.maplibre.android.style.layers.RasterLayer
+import org.maplibre.android.style.sources.RasterSource
+import org.maplibre.android.style.sources.TileSet
+
+private const val RADAR_SOURCE_ID = "radar-source"
+private const val RADAR_LAYER_ID = "radar-layer"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,7 +42,8 @@ fun MapScreen(
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    var mapView by remember { mutableStateOf<org.maplibre.android.maps.MapView?>(null) }
+    var mapView by remember { mutableStateOf<MapView?>(null) }
+    var map by remember { mutableStateOf<MapLibreMap?>(null) }
 
     // Location permission
     val locationPermissionGranted by remember {
@@ -58,8 +68,47 @@ fun MapScreen(
                     viewModel.setCenter(location.latitude, location.longitude)
                 }
             } catch (_: Exception) {
-                // Keep Romania center default
+                // Keep default
             }
+        }
+    }
+
+    // Radar layer management: add/remove/update when state changes
+    LaunchedEffect(
+        state.activeLayer,
+        state.radarCurrentIndex,
+        state.radarFrameUrls
+    ) {
+        val mapLibreMap = map ?: return@LaunchedEffect
+        if (state.activeLayer == "radar" && state.radarFrameUrls.isNotEmpty()) {
+            val tileUrl = state.radarFrameUrls[state.radarCurrentIndex]
+            try {
+                // Remove existing radar layer + source
+                mapLibreMap.style?.removeLayer(RADAR_LAYER_ID)
+                mapLibreMap.style?.removeSource(RADAR_SOURCE_ID)
+
+                // Add new source and layer
+                val tileSet = TileSet("tileset", tileUrl)
+                tileSet.minZoom = 3f
+                tileSet.maxZoom = 16f
+                val source = RasterSource(RADAR_SOURCE_ID, tileSet, 256)
+                mapLibreMap.style?.addSource(source)
+
+                val layer = RasterLayer(RADAR_LAYER_ID, RADAR_SOURCE_ID)
+                // Place radar below labels but above base map
+                layer.setProperties(
+                    org.maplibre.android.style.layers.PropertyFactory.rasterOpacity(0.65f)
+                )
+                mapLibreMap.style?.addLayer(layer)
+            } catch (_: Exception) {
+                // Map style may not be ready yet; skip this frame
+            }
+        } else if (state.activeLayer != "radar") {
+            // Clean up radar layer when switching away
+            try {
+                mapLibreMap.style?.removeLayer(RADAR_LAYER_ID)
+                mapLibreMap.style?.removeSource(RADAR_SOURCE_ID)
+            } catch (_: Exception) { }
         }
     }
 
@@ -77,14 +126,12 @@ fun MapScreen(
                                 .addOnSuccessListener { location ->
                                     if (location != null) {
                                         viewModel.setCenter(location.latitude, location.longitude)
-                                        mapView?.getMapAsync { map ->
-                                            map.cameraPosition = org.maplibre.android.camera.CameraPosition.Builder()
-                                                .target(org.maplibre.android.geometry.LatLng(
-                                                    location.latitude, location.longitude
-                                                ))
-                                                .zoom(10.0)
-                                                .build()
-                                        }
+                                        map?.cameraPosition = org.maplibre.android.camera.CameraPosition.Builder()
+                                            .target(org.maplibre.android.geometry.LatLng(
+                                                location.latitude, location.longitude
+                                            ))
+                                            .zoom(10.0)
+                                            .build()
                                     }
                                 }
                         }
@@ -106,17 +153,18 @@ fun MapScreen(
             // MapLibre GL Map
             AndroidView(
                 factory = { ctx ->
-                    org.maplibre.android.MapLibre.getInstance(ctx)
-                    org.maplibre.android.maps.MapView(ctx).apply {
+                    MapLibre.getInstance(ctx)
+                    MapView(ctx).apply {
                         layoutParams = ViewGroup.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.MATCH_PARENT
                         )
                         onCreate(null)
                         mapView = this
-                        getMapAsync { map ->
-                            map.setStyle("https://demotiles.maplibre.org/style.json")
-                            map.cameraPosition = org.maplibre.android.camera.CameraPosition.Builder()
+                        getMapAsync { mapLibreMap ->
+                            map = mapLibreMap
+                            mapLibreMap.setStyle("https://demotiles.maplibre.org/style.json")
+                            mapLibreMap.cameraPosition = org.maplibre.android.camera.CameraPosition.Builder()
                                 .target(org.maplibre.android.geometry.LatLng(
                                     state.centerLat, state.centerLon
                                 ))
@@ -135,12 +183,26 @@ fun MapScreen(
                         Lifecycle.Event.ON_RESUME -> mapView?.onResume()
                         Lifecycle.Event.ON_PAUSE -> mapView?.onPause()
                         Lifecycle.Event.ON_STOP -> mapView?.onStop()
-                        Lifecycle.Event.ON_DESTROY -> mapView?.onDestroy()
+                        Lifecycle.Event.ON_DESTROY -> {
+                            mapView?.onDestroy()
+                            mapView = null
+                            map = null
+                        }
                         else -> {}
                     }
                 }
                 lifecycleOwner.lifecycle.addObserver(observer)
                 onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+            }
+
+            // Radar loading indicator
+            if (state.isRadarLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(top = 16.dp)
+                        .size(32.dp)
+                )
             }
 
             // Layer selector FAB
@@ -186,7 +248,7 @@ fun MapScreen(
 
             // Map attribution
             Text(
-                text = "© OpenStreetMap contributors © MapLibre",
+                text = "© OpenStreetMap contributors © MapLibre © RainViewer",
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier

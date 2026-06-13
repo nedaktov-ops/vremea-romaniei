@@ -23,7 +23,4 @@ interface MeteoAlarmApi {
     suspend fun getAlerts(): Response<ResponseBody>
 }
 
-interface RainViewerApi {
-    @GET("public/weather-maps.json")
-    suspend fun getRadarManifest(): okhttp3.ResponseBody
-}
+// RainViewerApi moved to RainViewerApi.kt with kotlinx.serialization support

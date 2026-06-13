@@ -56,6 +56,7 @@ object NetworkClient {
     private val rainViewerRetrofit: Retrofit = Retrofit.Builder()
         .baseUrl("https://api.rainviewer.com/")
         .client(okHttpClient)
+        .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
         .build()
 
     val openMeteoApi: OpenMeteoApi = retrofit.create(OpenMeteoApi::class.java)

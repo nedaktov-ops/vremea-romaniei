@@ -90,9 +90,10 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
-    // Kotlinx Serialization
+    // Kotlinx Serialization & Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.9.0")
 
     // Room for local database (via KSP)
     implementation("androidx.room:room-runtime:2.8.4")
@@ -116,9 +117,6 @@ dependencies {
 
     // Location services
     implementation("com.google.android.gms:play-services-location:21.3.0")
-
-    // Kotlinx Coroutines Test (needed in main for testing)
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
 
     // Unit Testing
     testImplementation("junit:junit:4.13.2")

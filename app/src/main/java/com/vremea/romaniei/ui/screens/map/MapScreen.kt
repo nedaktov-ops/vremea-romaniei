@@ -1,6 +1,10 @@
 package com.vremea.romaniei.ui.screens.map
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.view.ViewGroup
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -13,10 +17,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.vremea.romaniei.data.location.LocationHelper
+import kotlinx.coroutines.tasks.await
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,11 +35,62 @@ fun MapScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
     var mapView by remember { mutableStateOf<org.maplibre.android.maps.MapView?>(null) }
 
+    // Location permission
+    val locationPermissionGranted by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        )
+    }
+    val locationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { _ -> }
+
+    // Try to get user location on first launch
+    LaunchedEffect(Unit) {
+        if (locationPermissionGranted) {
+            val helper = LocationHelper(context)
+            try {
+                val location = helper.getLastLocation().await()
+                if (location != null) {
+                    viewModel.setCenter(location.latitude, location.longitude)
+                }
+            } catch (_: Exception) {
+                // Keep Romania center default
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Hartă Meteorologică") },
                 actions = {
+                    IconButton(onClick = {
+                        if (!locationPermissionGranted) {
+                            locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                        } else {
+                            val helper = LocationHelper(context)
+                            helper.getLastLocation()
+                                .addOnSuccessListener { location ->
+                                    if (location != null) {
+                                        viewModel.setCenter(location.latitude, location.longitude)
+                                        mapView?.getMapAsync { map ->
+                                            map.cameraPosition = org.maplibre.android.camera.CameraPosition.Builder()
+                                                .target(org.maplibre.android.geometry.LatLng(
+                                                    location.latitude, location.longitude
+                                                ))
+                                                .zoom(10.0)
+                                                .build()
+                                        }
+                                    }
+                                }
+                        }
+                    }) {
+                        Icon(Icons.Default.MyLocation, contentDescription = "My Location")
+                    }
                     IconButton(onClick = { viewModel.toggleFullscreen() }) {
                         Icon(Icons.Default.Layers, contentDescription = "Layers")
                     }

@@ -1,10 +1,15 @@
 package com.vremea.romaniei.ui.screens.home
 
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
@@ -12,10 +17,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.vremea.romaniei.data.location.LocationHelper
+import kotlinx.coroutines.tasks.await
 import com.vremea.romaniei.ui.components.CurrentWeatherCard
 import com.vremea.romaniei.ui.components.HourlyForecastRow
 import com.vremea.romaniei.ui.components.WeatherDetailRow
@@ -27,9 +36,47 @@ fun HomeScreen(
 ) {
     val weatherState by viewModel.weatherState.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
+    val context = LocalContext.current
 
-    LaunchedEffect(Unit) {
-        viewModel.loadWeather(44.4268, 26.1025)
+    // Location permission state
+    var locationPermissionGranted by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        )
+    }
+
+    // Permission request launcher
+    val locationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        locationPermissionGranted = isGranted
+    }
+
+    // Location tracking
+    var hasRequestedLocation by remember { mutableStateOf(false) }
+
+    // Load weather on first composition
+    LaunchedEffect(locationPermissionGranted) {
+        if (locationPermissionGranted && !hasRequestedLocation) {
+            hasRequestedLocation = true
+            val helper = LocationHelper(context)
+            try {
+                val location = helper.getLastLocation().await()
+                if (location != null) {
+                    viewModel.loadWeather(location.latitude, location.longitude)
+                } else {
+                    viewModel.loadWeather(LocationHelper.DEFAULT_LAT, LocationHelper.DEFAULT_LON)
+                }
+            } catch (_: Exception) {
+                viewModel.loadWeather(LocationHelper.DEFAULT_LAT, LocationHelper.DEFAULT_LON)
+            }
+        } else if (!hasRequestedLocation) {
+            hasRequestedLocation = true
+            viewModel.loadWeather(LocationHelper.DEFAULT_LAT, LocationHelper.DEFAULT_LON)
+        }
     }
 
     Scaffold(
@@ -48,7 +95,19 @@ fun HomeScreen(
                     IconButton(onClick = { /* TODO: search */ }) {
                         Icon(Icons.Default.Search, contentDescription = "Search")
                     }
-                    IconButton(onClick = { /* TODO: my location */ }) {
+                    IconButton(onClick = {
+                        if (!locationPermissionGranted) {
+                            locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                        } else {
+                            val helper = LocationHelper(context)
+                            helper.getLastLocation()
+                                .addOnSuccessListener { location ->
+                                    if (location != null) {
+                                        viewModel.loadWeather(location.latitude, location.longitude)
+                                    }
+                                }
+                        }
+                    }) {
                         Icon(Icons.Default.MyLocation, contentDescription = "My Location")
                     }
                 }
@@ -74,19 +133,14 @@ fun HomeScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "⚠️",
-                            style = MaterialTheme.typography.displayLarge
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = state.message,
+                            text = state.message.ifEmpty { "Nu s-au putut încărca datele meteorologice" },
                             style = MaterialTheme.typography.bodyLarge,
                             textAlign = TextAlign.Center,
                             color = MaterialTheme.colorScheme.error
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(onClick = { viewModel.refresh() }) {
-                            Text("Retry")
+                            Text("Reîncearcă")
                         }
                     }
                 }

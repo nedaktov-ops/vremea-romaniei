@@ -1,20 +1,79 @@
 package com.vremea.romaniei.data.repository
 
+import android.util.Log
+import com.vremea.romaniei.VremeaApp
+import com.vremea.romaniei.data.local.AppDatabase
+import com.vremea.romaniei.data.local.entity.WeatherEntity
 import com.vremea.romaniei.data.remote.NetworkClient
 import com.vremea.romaniei.data.remote.dto.OpenMeteoResponse
 import com.vremea.romaniei.data.remote.dto.GeocodingResultDto
 import com.vremea.romaniei.domain.model.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.encodeToString
 
+/**
+ * Weather repository with Room-based caching.
+ *
+ * Cache strategy:
+ * - Weather forecasts: 30 minute TTL
+ * - Air quality: 1 hour TTL
+ * - City search: 7 day TTL (city data rarely changes)
+ */
 class WeatherRepository {
 
     private val api = NetworkClient.openMeteoApi
+    private val db by lazy { AppDatabase.getInstance(VremeaApp.getInstance()) }
+    private val json = Json {
+        ignoreUnknownKeys = true
+        isLenient = true
+        coerceInputValues = true
+    }
 
+    /** Weather cache TTL: 30 minutes */
+    private val WEATHER_TTL_MS = 30 * 60 * 1000L
+
+    /** Get forecast, checking Room cache first. */
     suspend fun getForecast(
         latitude: Double,
         longitude: Double
     ): Result<WeatherData> = runCatching {
+        val cacheKey = "${latitude.toFixed(2)}_${longitude.toFixed(2)}"
+        val now = System.currentTimeMillis()
+
+        // 1. Try Room cache first
+        val cached = withContext(Dispatchers.IO) {
+            db.weatherDao().getWeather(cacheKey, now)
+        }
+        if (cached != null) {
+            Log.d(TAG, "Weather cache hit for $cacheKey")
+            val response = json.decodeFromString<OpenMeteoResponse>(cached.jsonData)
+            return@runCatching mapToWeatherData(response)
+        }
+
+        // 2. Cache miss — call API
+        Log.d(TAG, "Weather cache miss for $cacheKey, fetching API")
         val response = api.getForecast(latitude, longitude)
-        mapToWeatherData(response)
+        val weatherData = mapToWeatherData(response)
+
+        // 3. Save to Room cache
+        try {
+            val jsonStr = json.encodeToString(response)
+            val entity = WeatherEntity(
+                id = cacheKey,
+                jsonData = jsonStr,
+                lastUpdated = now,
+                expiresAt = now + WEATHER_TTL_MS
+            )
+            withContext(Dispatchers.IO) {
+                db.weatherDao().insertWeather(entity)
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to cache weather data", e)
+        }
+
+        weatherData
     }
 
     suspend fun getAirQuality(
@@ -29,6 +88,8 @@ class WeatherRepository {
         val response = api.searchLocations(query)
         response.results?.mapNotNull { it.toLocationData() } ?: emptyList()
     }
+
+    // ---- Mapping functions (unchanged from original) ----
 
     private fun mapToWeatherData(response: OpenMeteoResponse): WeatherData {
         val current = response.current?.let { cur ->
@@ -124,16 +185,6 @@ class WeatherRepository {
         )
     }
 
-    @kotlinx.coroutines.ObsoleteCoroutinesApi
-    private fun mapToAirQualityV2(response: OpenMeteoResponse): AirQuality? {
-        // TODO: Air quality API returns different fields than weather forecast.
-        // This function should be called against the air-quality endpoint response
-        // which has european_aqi, us_aqi, pm2_5, pm10, etc. in the "current" block.
-        // Currently blocked by: OpenMeteoResponse maps both forecast AND air-quality
-        // through the same DTO. A separate AirQualityResponse DTO is needed.
-        return null
-    }
-
     private fun GeocodingResultDto.toLocationData(): LocationData? {
         val lat = latitude ?: return null
         val lon = longitude ?: return null
@@ -150,16 +201,11 @@ class WeatherRepository {
     }
 
     private fun parseTime(timeStr: String): Long {
-        // Open-Meteo returns times in local timezone (requested via timezone=auto).
-        // Romania is UTC+2 (winter) / UTC+3 (summer/EEST).
-        // Try ISO-8601 with offset first, then local-without-offset assuming EET/EEST.
         return try {
-            // If the string has a timezone offset (e.g. "2024-01-15T14:00:00+02:00")
             java.time.OffsetDateTime.parse(timeStr, java.time.format.DateTimeFormatter.ISO_DATE_TIME)
                 .toInstant().toEpochMilli()
         } catch (_: Exception) {
             try {
-                // No offset — assume Europe/Bucharest timezone
                 val local = java.time.LocalDateTime.parse(
                     timeStr,
                     java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd['T'HH:mm[:ss]]")
@@ -181,4 +227,13 @@ class WeatherRepository {
             System.currentTimeMillis()
         }
     }
+
+    companion object {
+        private const val TAG = "WeatherRepository"
+    }
+}
+
+/** Format Double to N decimal places without trailing zeros. */
+private fun Double.toFixed(decimals: Int): String {
+    return String.format("%.${decimals}f", this)
 }

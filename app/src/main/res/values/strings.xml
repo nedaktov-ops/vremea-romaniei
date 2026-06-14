@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">VremeaRomâniei</string>
+    <string name="app_name">ROANMAPP</string>
     <string name="tab_home">Home</string>
     <string name="tab_forecast">Forecast</string>
     <string name="tab_map">Map</string>

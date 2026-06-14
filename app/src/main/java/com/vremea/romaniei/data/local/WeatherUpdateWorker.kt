@@ -1,7 +1,5 @@
 package com.vremea.romaniei.data.local
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.Context
 import android.util.Log
 import androidx.core.app.NotificationCompat
@@ -16,7 +14,6 @@ class WeatherUpdateWorker(
 
     override suspend fun doWork(): Result {
         return try {
-            createNotificationChannel()
             setForeground(createForegroundInfo())
             Log.d(TAG, "Weather update worker executing")
             Result.success()
@@ -39,14 +36,6 @@ class WeatherUpdateWorker(
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .build()
         return ForegroundInfo(NOTIFICATION_ID, notification)
-    }
-
-    private fun createNotificationChannel() {
-        val channel = NotificationChannel(
-            CHANNEL_ID, "Actualizări Meteo", NotificationManager.IMPORTANCE_LOW
-        ).apply { description = "Notificări pentru actualizări meteo în fundal" }
-        val manager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        manager.createNotificationChannel(channel)
     }
 
     companion object {

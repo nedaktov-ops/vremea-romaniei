@@ -23,7 +23,6 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.vremea.romaniei.data.location.LocationHelper
 import kotlinx.coroutines.tasks.await
-import org.maplibre.android.MapLibre
 import org.maplibre.android.maps.MapView
 import org.maplibre.android.maps.MapLibreMap
 import org.maplibre.android.style.layers.RasterLayer
@@ -153,7 +152,6 @@ fun MapScreen(
             // MapLibre GL Map
             AndroidView(
                 factory = { ctx ->
-                    MapLibre.getInstance(ctx)
                     MapView(ctx).apply {
                         layoutParams = ViewGroup.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT,

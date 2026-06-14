@@ -1,22 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- App -->
     <string name="app_name">ROANMAPP</string>
+
+    <!-- Navigation tabs -->
     <string name="tab_home">Acasă</string>
     <string name="tab_forecast">Prognoză</string>
     <string name="tab_map">Hartă</string>
     <string name="tab_alerts">Alerte</string>
     <string name="tab_settings">Setări</string>
+
+    <!-- Screen titles -->
     <string name="current_weather">Vremea Acum</string>
     <string name="hourly_forecast">Prognoză Orară</string>
     <string name="daily_forecast">Prognoză 16 Zile</string>
     <string name="weather_map">Hartă Meteorologică</string>
     <string name="weather_alerts">Alerte Meteo</string>
     <string name="settings">Setări</string>
+    <string name="active_alerts">Alerte Active</string>
+
+    <!-- Actions -->
     <string name="loading">Se încarcă…</string>
     <string name="error_message">Nu s-au putut încărca datele meteo</string>
     <string name="retry">Reîncearcă</string>
     <string name="refresh">Reîmprospătează</string>
+    <string name="search">Căutare</string>
     <string name="search_city">Caută localitate…</string>
+    <string name="my_location">Locația mea</string>
+    <string name="layers">Straturi</string>
+
+    <!-- Weather detail labels -->
     <string name="feels_like">Perceput ca</string>
     <string name="humidity">Umiditate</string>
     <string name="wind">Vânt</string>
@@ -29,12 +42,20 @@
     <string name="sunset">Apus</string>
     <string name="precipitation">Precipitații</string>
     <string name="precipitation_probability">Șanse de Ploaie</string>
+    <string name="section_details">Detalii Suplimentare</string>
+    <string name="source_prefix">Sursă: %s</string>
+
+    <!-- Settings -->
     <string name="temperature_unit">Unitate Temperatură</string>
     <string name="celsius">Celsius</string>
+    <string name="celsius_display">Celsius (°C)</string>
     <string name="fahrenheit">Fahrenheit</string>
+    <string name="fahrenheit_display">Fahrenheit (°F)</string>
     <string name="language">Limbă</string>
     <string name="romanian">Română</string>
     <string name="english">English</string>
+    <string name="select_language">Selectează Limba</string>
+    <string name="select_theme">Selectează Tema</string>
     <string name="theme">Temă</string>
     <string name="theme_system">Sistem</string>
     <string name="theme_light">Luminosă</string>
@@ -42,14 +63,37 @@
     <string name="notifications">Notificări</string>
     <string name="notifications_desc">Alerte meteo și actualizări</string>
     <string name="update_interval">Interval Actualizare</string>
-    <string name="every_hours">La fiecare %d ore</string>
+    <plurals name="every_hours">
+        <item quantity="one">La fiecare %d oră</item>
+        <item quantity="few">La fiecare %d ore</item>
+        <item quantity="other">La fiecare %d de ore</item>
+    </plurals>
     <string name="about">Despre</string>
     <string name="version">Versiune</string>
     <string name="data_sources">Surse de Date</string>
+    <string name="data_sources_value">Open-Meteo, ANM, MeteoAlarm UE</string>
+
+    <!-- Map -->
     <string name="map_layer_temp">Temperatură</string>
     <string name="map_layer_precip">Precipitații</string>
     <string name="map_layer_wind">Vânt</string>
     <string name="map_layer_radar">Radar</string>
-    <string name="map_attribution">© Contribuitori OpenStreetMap</string>
+    <string name="map_layer_temp_short">°C</string>
+    <string name="map_layer_precip_short">Plm</string>
+    <string name="map_layer_wind_short">Vânt</string>
+    <string name="map_layer_radar_short">Rad</string>
+    <string name="map_attribution">© Contribuitori OpenStreetMap © MapLibre © RainViewer</string>
+
+    <!-- Alerts -->
     <string name="no_alerts">Nicio alertă activă</string>
+
+    <!-- Notification channels (shown in Android System Settings) -->
+    <string name="channel_alert_check_name">Verificare Alerte</string>
+    <string name="channel_alert_check_desc">Notificări pentru verificare alerte în fundal</string>
+    <string name="channel_weather_update_name">Actualizări Meteo</string>
+    <string name="channel_weather_update_desc">Notificări pentru actualizări meteo în fundal</string>
+
+    <!-- Notification text -->
+    <string name="alert_check_text">Verificare alerte meteo…</string>
+    <string name="weather_update_text">Actualizare date meteo în curs…</string>
 </resources>

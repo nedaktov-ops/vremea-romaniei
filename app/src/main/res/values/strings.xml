@@ -1,22 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- App -->
     <string name="app_name">ROANMAPP</string>
+
+    <!-- Navigation tabs -->
     <string name="tab_home">Home</string>
     <string name="tab_forecast">Forecast</string>
     <string name="tab_map">Map</string>
     <string name="tab_alerts">Alerts</string>
     <string name="tab_settings">Settings</string>
+
+    <!-- Screen titles -->
     <string name="current_weather">Current Weather</string>
     <string name="hourly_forecast">Hourly Forecast</string>
     <string name="daily_forecast">16-Day Forecast</string>
     <string name="weather_map">Weather Map</string>
     <string name="weather_alerts">Weather Alerts</string>
     <string name="settings">Settings</string>
+    <string name="active_alerts">Active Alerts</string>
+
+    <!-- Actions -->
     <string name="loading">Loading…</string>
     <string name="error_message">Failed to load weather data</string>
     <string name="retry">Retry</string>
     <string name="refresh">Refresh</string>
+    <string name="search">Search</string>
     <string name="search_city">Search city…</string>
+    <string name="my_location">My Location</string>
+    <string name="layers">Layers</string>
+
+    <!-- Weather detail labels -->
     <string name="feels_like">Feels like</string>
     <string name="humidity">Humidity</string>
     <string name="wind">Wind</string>
@@ -29,12 +42,20 @@
     <string name="sunset">Sunset</string>
     <string name="precipitation">Precipitation</string>
     <string name="precipitation_probability">Rain Chance</string>
+    <string name="section_details">Additional Details</string>
+    <string name="source_prefix">Source: %s</string>
+
+    <!-- Settings -->
     <string name="temperature_unit">Temperature Unit</string>
     <string name="celsius">Celsius</string>
+    <string name="celsius_display">Celsius (°C)</string>
     <string name="fahrenheit">Fahrenheit</string>
+    <string name="fahrenheit_display">Fahrenheit (°F)</string>
     <string name="language">Language</string>
     <string name="romanian">Română</string>
     <string name="english">English</string>
+    <string name="select_language">Select Language</string>
+    <string name="select_theme">Select Theme</string>
     <string name="theme">Theme</string>
     <string name="theme_system">System</string>
     <string name="theme_light">Light</string>
@@ -42,14 +63,36 @@
     <string name="notifications">Notifications</string>
     <string name="notifications_desc">Weather alerts and updates</string>
     <string name="update_interval">Update Interval</string>
-    <string name="every_hours">Every %d hours</string>
+    <plurals name="every_hours">
+        <item quantity="one">Every %d hour</item>
+        <item quantity="other">Every %d hours</item>
+    </plurals>
     <string name="about">About</string>
     <string name="version">Version</string>
     <string name="data_sources">Data Sources</string>
+    <string name="data_sources_value">Open-Meteo, ANM, MeteoAlarm EU</string>
+
+    <!-- Map -->
     <string name="map_layer_temp">Temperature</string>
     <string name="map_layer_precip">Precipitation</string>
     <string name="map_layer_wind">Wind</string>
     <string name="map_layer_radar">Radar</string>
-    <string name="map_attribution">© OpenStreetMap contributors</string>
+    <string name="map_layer_temp_short">°C</string>
+    <string name="map_layer_precip_short">Pcp</string>
+    <string name="map_layer_wind_short">Wind</string>
+    <string name="map_layer_radar_short">Rad</string>
+    <string name="map_attribution">© OpenStreetMap contributors © MapLibre © RainViewer</string>
+
+    <!-- Alerts -->
     <string name="no_alerts">No active alerts</string>
+
+    <!-- Notification channels (shown in Android System Settings) -->
+    <string name="channel_alert_check_name">Alert Check</string>
+    <string name="channel_alert_check_desc">Notifications for background alert checking</string>
+    <string name="channel_weather_update_name">Weather Updates</string>
+    <string name="channel_weather_update_desc">Notifications for background weather updates</string>
+
+    <!-- Notification text -->
+    <string name="alert_check_text">Checking weather alerts…</string>
+    <string name="weather_update_text">Updating weather data…</string>
 </resources>

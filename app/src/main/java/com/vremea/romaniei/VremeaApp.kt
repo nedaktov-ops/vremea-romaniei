@@ -3,8 +3,6 @@ package com.vremea.romaniei
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import androidx.work.Configuration
-import androidx.work.WorkManager
 import com.vremea.romaniei.data.local.BootReceiver
 import com.vremea.romaniei.notification.AlertNotificationManager
 import org.maplibre.android.MapLibre
@@ -17,11 +15,7 @@ class VremeaApp : Application() {
         // MapLibre init (Application context — best practice, idempotent)
         MapLibre.getInstance(this)
 
-        // WorkManager config
-        val config = Configuration.Builder()
-            .setMinimumLoggingLevel(android.util.Log.INFO)
-            .build()
-        WorkManager.initialize(this, config)
+        // Schedule periodic workers (WorkManager auto-initializes via ContentProvider on modern Android)
         BootReceiver.scheduleWorkers(this)
 
         // Create all notification channels at app start (idempotent)

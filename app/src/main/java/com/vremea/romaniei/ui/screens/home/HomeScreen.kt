@@ -1,15 +1,13 @@
 package com.vremea.romaniei.ui.screens.home
 
 import android.Manifest
-import android.content.pm.PackageManager
+import android.annotation.SuppressLint
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
@@ -21,7 +19,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.vremea.romaniei.data.location.LocationHelper
 import kotlinx.coroutines.tasks.await
@@ -30,6 +27,7 @@ import com.vremea.romaniei.ui.components.HourlyForecastRow
 import com.vremea.romaniei.ui.components.WeatherDetailRow
 
 @OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("MissingPermission")  // Permission checked at runtime via locationPermissionGranted
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = viewModel()
@@ -38,21 +36,16 @@ fun HomeScreen(
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val context = LocalContext.current
 
-    // Location permission state
+    // Location permission state (check both COARSE and FINE)
     var locationPermissionGranted by remember {
-        mutableStateOf(
-            ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        )
+        mutableStateOf(LocationHelper.isLocationPermissionGranted(context))
     }
 
-    // Permission request launcher
+    // Permission request launcher (request both COARSE and FINE)
     val locationPermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        locationPermissionGranted = isGranted
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { grantedMap ->
+        locationPermissionGranted = grantedMap.values.any { it }
     }
 
     // Location tracking
@@ -97,7 +90,12 @@ fun HomeScreen(
                     }
                     IconButton(onClick = {
                         if (!locationPermissionGranted) {
-                            locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                            locationPermissionLauncher.launch(
+                                arrayOf(
+                                    Manifest.permission.ACCESS_FINE_LOCATION,
+                                    Manifest.permission.ACCESS_COARSE_LOCATION
+                                )
+                            )
                         } else {
                             val helper = LocationHelper(context)
                             helper.getLastLocation()

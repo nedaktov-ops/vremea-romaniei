@@ -233,7 +233,7 @@ class WeatherRepository {
     }
 }
 
-/** Format Double to N decimal places without trailing zeros. */
+/** Format Double to N decimal places (locale-independent, uses dot separator). */
 private fun Double.toFixed(decimals: Int): String {
-    return String.format("%.${decimals}f", this)
+    return String.format(java.util.Locale.US, "%.${decimals}f", this)
 }

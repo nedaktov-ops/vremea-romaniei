@@ -1,8 +1,10 @@
 package com.vremea.romaniei.data.location
 
+import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
+import androidx.annotation.RequiresPermission
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -26,8 +28,17 @@ class LocationHelper(context: Context) {
      * or [android.Manifest.permission.ACCESS_COARSE_LOCATION] granted
      * before calling this.
      */
+    @RequiresPermission(anyOf = [
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION
+    ])
     fun getLastLocation(): Task<Location> {
-        return fusedLocationClient.lastLocation
+        return try {
+            fusedLocationClient.lastLocation
+        } catch (e: SecurityException) {
+            // Permission was revoked at runtime — return empty task
+            com.google.android.gms.tasks.Tasks.forResult(null)
+        }
     }
 
     companion object {

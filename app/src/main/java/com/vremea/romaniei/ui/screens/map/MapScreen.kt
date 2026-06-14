@@ -1,7 +1,7 @@
 package com.vremea.romaniei.ui.screens.map
 
 import android.Manifest
-import android.content.pm.PackageManager
+import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,7 +17,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.foundation.layout.size
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -35,6 +34,7 @@ private const val RADAR_SOURCE_ID = "radar-source"
 private const val RADAR_LAYER_ID = "radar-layer"
 
 @OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("MissingPermission")  // Permission checked at runtime via locationPermissionGranted
 @Composable
 fun MapScreen(
     viewModel: MapViewModel = viewModel()
@@ -45,17 +45,12 @@ fun MapScreen(
     var mapView by remember { mutableStateOf<MapView?>(null) }
     var map by remember { mutableStateOf<MapLibreMap?>(null) }
 
-    // Location permission
+    // Location permission (check both COARSE and FINE)
     val locationPermissionGranted by remember {
-        mutableStateOf(
-            ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        )
+        mutableStateOf(LocationHelper.isLocationPermissionGranted(context))
     }
     val locationPermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
+        contract = ActivityResultContracts.RequestMultiplePermissions()
     ) { _ -> }
 
     // Try to get user location on first launch
@@ -119,7 +114,12 @@ fun MapScreen(
                 actions = {
                     IconButton(onClick = {
                         if (!locationPermissionGranted) {
-                            locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                            locationPermissionLauncher.launch(
+                                arrayOf(
+                                    Manifest.permission.ACCESS_FINE_LOCATION,
+                                    Manifest.permission.ACCESS_COARSE_LOCATION
+                                )
+                            )
                         } else {
                             val helper = LocationHelper(context)
                             helper.getLastLocation()
@@ -163,7 +163,7 @@ fun MapScreen(
                         mapView = this
                         getMapAsync { mapLibreMap ->
                             map = mapLibreMap
-                            mapLibreMap.setStyle("https://demotiles.maplibre.org/style.json")
+                            mapLibreMap.setStyle("https://tiles.openfreemap.org/styles/liberty")
                             mapLibreMap.cameraPosition = org.maplibre.android.camera.CameraPosition.Builder()
                                 .target(org.maplibre.android.geometry.LatLng(
                                     state.centerLat, state.centerLon

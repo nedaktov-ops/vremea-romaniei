@@ -14,7 +14,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.vremea.romaniei.R
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.foundation.layout.size
 import androidx.lifecycle.Lifecycle
@@ -109,7 +111,7 @@ fun MapScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Hartă Meteorologică") },
+                title = { Text(stringResource(R.string.weather_map)) },
                 actions = {
                     IconButton(onClick = {
                         if (!locationPermissionGranted) {
@@ -135,10 +137,10 @@ fun MapScreen(
                                 }
                         }
                     }) {
-                        Icon(Icons.Default.MyLocation, contentDescription = "My Location")
+                        Icon(Icons.Default.MyLocation, contentDescription = stringResource(R.string.my_location))
                     }
                     IconButton(onClick = { viewModel.toggleFullscreen() }) {
-                        Icon(Icons.Default.Layers, contentDescription = "Layers")
+                        Icon(Icons.Default.Layers, contentDescription = stringResource(R.string.layers))
                     }
                 }
             )
@@ -216,7 +218,7 @@ fun MapScreen(
                         MaterialTheme.colorScheme.primary
                     else MaterialTheme.colorScheme.surface
                 ) {
-                    Text("°C", style = MaterialTheme.typography.labelSmall)
+                    Text(stringResource(R.string.map_layer_temp_short), style = MaterialTheme.typography.labelSmall)
                 }
                 SmallFloatingActionButton(
                     onClick = { viewModel.setLayer("precipitation") },
@@ -224,7 +226,7 @@ fun MapScreen(
                         MaterialTheme.colorScheme.primary
                     else MaterialTheme.colorScheme.surface
                 ) {
-                    Text("Plm", style = MaterialTheme.typography.labelSmall)
+                    Text(stringResource(R.string.map_layer_precip_short), style = MaterialTheme.typography.labelSmall)
                 }
                 SmallFloatingActionButton(
                     onClick = { viewModel.setLayer("wind") },
@@ -232,7 +234,7 @@ fun MapScreen(
                         MaterialTheme.colorScheme.primary
                     else MaterialTheme.colorScheme.surface
                 ) {
-                    Text("Vânt", style = MaterialTheme.typography.labelSmall)
+                    Text(stringResource(R.string.map_layer_wind_short), style = MaterialTheme.typography.labelSmall)
                 }
                 SmallFloatingActionButton(
                     onClick = { viewModel.setLayer("radar") },
@@ -240,13 +242,13 @@ fun MapScreen(
                         MaterialTheme.colorScheme.primary
                     else MaterialTheme.colorScheme.surface
                 ) {
-                    Text("Rad", style = MaterialTheme.typography.labelSmall)
+                    Text(stringResource(R.string.map_layer_radar_short), style = MaterialTheme.typography.labelSmall)
                 }
             }
 
             // Map attribution
             Text(
-                text = "© OpenStreetMap contributors © MapLibre © RainViewer",
+                text = stringResource(R.string.map_attribution),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier

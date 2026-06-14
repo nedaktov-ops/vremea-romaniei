@@ -7,9 +7,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.vremea.romaniei.R
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.vremea.romaniei.ui.components.AlertBanner
 
@@ -23,10 +25,10 @@ fun AlertsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Alerte Meteo") },
+                title = { Text(stringResource(R.string.weather_alerts)) },
                 actions = {
                     IconButton(onClick = { viewModel.refresh() }) {
-                        Icon(Icons.Default.Refresh, contentDescription = "Reîncarcă")
+                        Icon(Icons.Default.Refresh, contentDescription = stringResource(R.string.refresh))
                     }
                 }
             )
@@ -60,7 +62,7 @@ fun AlertsScreen(
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Text(
-                                    text = "Nicio alertă activă",
+                                    text = stringResource(R.string.no_alerts),
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -72,7 +74,7 @@ fun AlertsScreen(
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             Text(
-                                text = "Alerte Active",
+                                text = stringResource(R.string.active_alerts),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.SemiBold
                             )
@@ -95,7 +97,7 @@ fun AlertsScreen(
                             )
                             Spacer(modifier = Modifier.height(12.dp))
                             Button(onClick = { viewModel.refresh() }) {
-                                Text("Încearcă din nou")
+                                Text(stringResource(R.string.retry))
                             }
                         }
                     }

@@ -6,8 +6,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.vremea.romaniei.R
 import com.vremea.romaniei.domain.model.AlertData
 import com.vremea.romaniei.domain.model.AlertSeverity
 
@@ -60,7 +62,7 @@ fun AlertBanner(alert: AlertData) {
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Sursă: ${alert.source}",
+                text = stringResource(R.string.source_prefix, alert.source),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

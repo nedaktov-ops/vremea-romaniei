@@ -14,8 +14,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.vremea.romaniei.R
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.vremea.romaniei.data.location.LocationHelper
@@ -69,7 +71,7 @@ fun ForecastScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Prognoză 16 Zile") },
+                title = { Text(stringResource(R.string.daily_forecast)) },
                 actions = {
                     IconButton(onClick = {
                         if (!locationPermissionGranted) {
@@ -84,7 +86,7 @@ fun ForecastScreen(
                                 }
                         }
                     }) {
-                        Icon(Icons.Default.MyLocation, contentDescription = "My Location")
+                        Icon(Icons.Default.MyLocation, contentDescription = stringResource(R.string.my_location))
                     }
                 }
             )

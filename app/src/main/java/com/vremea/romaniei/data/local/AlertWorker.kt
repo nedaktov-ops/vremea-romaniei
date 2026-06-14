@@ -6,6 +6,7 @@ import androidx.core.app.NotificationCompat
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
+import com.vremea.romaniei.R
 
 class AlertWorker(appContext: Context, params: WorkerParameters) : CoroutineWorker(appContext, params) {
     override suspend fun doWork(): Result {
@@ -21,8 +22,8 @@ class AlertWorker(appContext: Context, params: WorkerParameters) : CoroutineWork
     override suspend fun getForegroundInfo(): ForegroundInfo = createForegroundInfo()
     private fun createForegroundInfo(): ForegroundInfo {
         val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
-            .setContentTitle("VremeaRomâniei")
-            .setContentText("Verificare alerte meteo...")
+            .setContentTitle(applicationContext.getString(R.string.app_name))
+            .setContentText(applicationContext.getString(R.string.alert_check_text))
             .setSmallIcon(android.R.drawable.ic_dialog_info)
             .setOngoing(true).setPriority(NotificationCompat.PRIORITY_LOW)
             .build()

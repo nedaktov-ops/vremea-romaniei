@@ -6,6 +6,7 @@ import androidx.core.app.NotificationCompat
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
+import com.vremea.romaniei.R
 
 class WeatherUpdateWorker(
     appContext: Context,
@@ -29,8 +30,8 @@ class WeatherUpdateWorker(
 
     private fun createForegroundInfo(): ForegroundInfo {
         val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
-            .setContentTitle("VremeaRomâniei")
-            .setContentText("Actualizare date meteo în curs...")
+            .setContentTitle(applicationContext.getString(R.string.app_name))
+            .setContentText(applicationContext.getString(R.string.weather_update_text))
             .setSmallIcon(android.R.drawable.ic_dialog_info)
             .setOngoing(true)
             .setPriority(NotificationCompat.PRIORITY_LOW)

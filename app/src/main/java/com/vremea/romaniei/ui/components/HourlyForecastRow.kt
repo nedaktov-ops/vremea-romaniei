@@ -7,8 +7,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.vremea.romaniei.R
 import com.vremea.romaniei.domain.model.HourlyWeather
 import java.text.SimpleDateFormat
 import java.util.*
@@ -24,7 +26,7 @@ fun HourlyForecastRow(hourlyData: List<HourlyWeather>) {
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text = "Următoarele 24 de ore",
+                text = stringResource(R.string.hourly_forecast),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold
             )

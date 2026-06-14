@@ -6,9 +6,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalConfiguration
+import com.vremea.romaniei.R
 import com.vremea.romaniei.domain.model.WeatherData
 
 @Composable
@@ -22,13 +24,13 @@ fun WeatherDetailRow(weather: WeatherData) {
     ) {
         DetailCard(
             modifier = Modifier.weight(1f),
-            label = "Presiune",
+            label = stringResource(R.string.pressure),
             value = "${current.pressure.toInt()} hPa",
             icon = "🌡️"
         )
         DetailCard(
             modifier = Modifier.weight(1f),
-            label = "Vânt",
+            label = stringResource(R.string.wind),
             value = "${current.windSpeed.toInt()} km/h",
             icon = "💨"
         )
@@ -42,13 +44,13 @@ fun WeatherDetailRow(weather: WeatherData) {
     ) {
         DetailCard(
             modifier = Modifier.weight(1f),
-            label = "Rafale",
+            label = stringResource(R.string.wind_gusts),
             value = "${current.windGusts.toInt()} km/h",
             icon = "🌬️"
         )
         DetailCard(
             modifier = Modifier.weight(1f),
-            label = "UV Index",
+            label = stringResource(R.string.uv_index),
             value = "${current.uvIndex.toInt()}",
             icon = "☀️"
         )
@@ -63,7 +65,7 @@ fun WeatherDetailRow(weather: WeatherData) {
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text = "Detalii suplimentare",
+                text = stringResource(R.string.section_details),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.SemiBold
             )
@@ -73,7 +75,7 @@ fun WeatherDetailRow(weather: WeatherData) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column {
-                    Text("Răsărit", style = MaterialTheme.typography.labelSmall)
+                    Text(stringResource(R.string.sunrise), style = MaterialTheme.typography.labelSmall)
                     val sunrise = weather.daily.firstOrNull()?.sunrise
                     if (sunrise != null) {
                         Text(
@@ -86,7 +88,7 @@ fun WeatherDetailRow(weather: WeatherData) {
                     }
                 }
                 Column(horizontalAlignment = Alignment.End) {
-                    Text("Apus", style = MaterialTheme.typography.labelSmall)
+                    Text(stringResource(R.string.sunset), style = MaterialTheme.typography.labelSmall)
                     val sunset = weather.daily.firstOrNull()?.sunset
                     if (sunset != null) {
                         Text(

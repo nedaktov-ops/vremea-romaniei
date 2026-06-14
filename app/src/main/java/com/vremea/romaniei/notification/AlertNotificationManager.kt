@@ -9,6 +9,7 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import com.vremea.romaniei.R
 import com.vremea.romaniei.domain.model.AlertData
 import com.vremea.romaniei.domain.model.AlertSeverity
 
@@ -18,7 +19,7 @@ object AlertNotificationManager {
 
     fun createNotificationChannel(context: Context) {
         val channel = NotificationChannel(
-            CHANNEL_ID, "Alerte Meteo", NotificationManager.IMPORTANCE_HIGH
+            CHANNEL_ID, context.getString(R.string.weather_alerts), NotificationManager.IMPORTANCE_HIGH
         ).apply { enableVibration(true) }
         (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
             .createNotificationChannel(channel)

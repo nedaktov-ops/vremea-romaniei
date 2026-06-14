@@ -16,9 +16,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.vremea.romaniei.R
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.vremea.romaniei.data.location.LocationHelper
 import kotlinx.coroutines.tasks.await
@@ -77,16 +79,16 @@ fun HomeScreen(
             TopAppBar(
                 title = {
                     Text(
-                        "VremeaRomâniei",
+                        stringResource(R.string.app_name),
                         style = MaterialTheme.typography.titleLarge
                     )
                 },
                 actions = {
                     IconButton(onClick = { viewModel.refresh() }) {
-                        Icon(Icons.Default.Refresh, contentDescription = "Refresh")
+                        Icon(Icons.Default.Refresh, contentDescription = stringResource(R.string.refresh))
                     }
                     IconButton(onClick = { /* TODO: search */ }) {
-                        Icon(Icons.Default.Search, contentDescription = "Search")
+                        Icon(Icons.Default.Search, contentDescription = stringResource(R.string.search))
                     }
                     IconButton(onClick = {
                         if (!locationPermissionGranted) {
@@ -106,7 +108,7 @@ fun HomeScreen(
                                 }
                         }
                     }) {
-                        Icon(Icons.Default.MyLocation, contentDescription = "My Location")
+                        Icon(Icons.Default.MyLocation, contentDescription = stringResource(R.string.my_location))
                     }
                 }
             )
@@ -131,14 +133,14 @@ fun HomeScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = state.message.ifEmpty { "Nu s-au putut încărca datele meteorologice" },
+                            text = state.message.ifEmpty { stringResource(R.string.error_message) },
                             style = MaterialTheme.typography.bodyLarge,
                             textAlign = TextAlign.Center,
                             color = MaterialTheme.colorScheme.error
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(onClick = { viewModel.refresh() }) {
-                            Text("Reîncearcă")
+                            Text(stringResource(R.string.retry))
                         }
                     }
                 }

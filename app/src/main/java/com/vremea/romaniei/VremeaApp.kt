@@ -35,14 +35,14 @@ class VremeaApp : Application() {
         // Foreground service channels (low priority)
         createChannel(
             "vremea_alert_check",
-            "Verificare Alerte",
-            "Notificări pentru verificare alerte în fundal",
+            getString(R.string.channel_alert_check_name),
+            getString(R.string.channel_alert_check_desc),
             NotificationManager.IMPORTANCE_LOW
         )
         createChannel(
             "vremea_weather_updates",
-            "Actualizări Meteo",
-            "Notificări pentru actualizări meteo în fundal",
+            getString(R.string.channel_weather_update_name),
+            getString(R.string.channel_weather_update_desc),
             NotificationManager.IMPORTANCE_LOW
         )
     }

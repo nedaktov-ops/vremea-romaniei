@@ -8,6 +8,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.res.stringResource
+import com.vremea.romaniei.R
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontWeight
@@ -59,7 +61,7 @@ fun CurrentWeatherCard(weather: WeatherData) {
 
             // Feels like
             Text(
-                text = "Perceput ca ${current.feelsLike.toInt()}°C",
+                text = "${stringResource(R.string.feels_like)} ${current.feelsLike.toInt()}°C",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -79,10 +81,10 @@ fun CurrentWeatherCard(weather: WeatherData) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                WeatherChip("💧", "${current.humidity}%", "Umiditate")
-                WeatherChip("💨", "${current.windSpeed.toInt()} km/h", "Vânt")
-                WeatherChip("☁️", "${current.cloudCover}%", "Nori")
-                WeatherChip("👁️", "${(current.visibility / 1000).toInt()} km", "Vizibilitate")
+                WeatherChip("💧", "${current.humidity}%", stringResource(R.string.humidity))
+                WeatherChip("💨", "${current.windSpeed.toInt()} km/h", stringResource(R.string.wind))
+                WeatherChip("☁️", "${current.cloudCover}%", stringResource(R.string.cloud_cover))
+                WeatherChip("👁️", "${(current.visibility / 1000).toInt()} km", stringResource(R.string.visibility))
             }
         }
     }

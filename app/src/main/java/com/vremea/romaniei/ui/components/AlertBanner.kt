@@ -14,14 +14,18 @@ import androidx.compose.ui.unit.dp
 import com.vremea.romaniei.R
 import com.vremea.romaniei.domain.model.AlertData
 import com.vremea.romaniei.domain.model.AlertSeverity
+import com.vremea.romaniei.ui.theme.AlertBlue
+import com.vremea.romaniei.ui.theme.AlertOrange
+import com.vremea.romaniei.ui.theme.AlertRed
+import com.vremea.romaniei.ui.theme.AlertYellow
 
 @Composable
 fun AlertBanner(alert: AlertData) {
     val severityColor = when (alert.severity) {
-        AlertSeverity.MINOR -> MaterialTheme.colorScheme.tertiary
-        AlertSeverity.MODERATE -> com.vremea.romaniei.ui.theme.AlertYellow
-        AlertSeverity.SEVERE -> com.vremea.romaniei.ui.theme.AlertOrange
-        AlertSeverity.EXTREME -> com.vremea.romaniei.ui.theme.AlertRed
+        AlertSeverity.MINOR -> AlertBlue
+        AlertSeverity.MODERATE -> AlertYellow
+        AlertSeverity.SEVERE -> AlertOrange
+        AlertSeverity.EXTREME -> AlertRed
     }
 
     Card(

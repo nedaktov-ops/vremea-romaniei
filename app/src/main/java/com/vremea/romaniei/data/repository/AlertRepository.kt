@@ -139,12 +139,7 @@ class AlertRepository {
                     endTime = now + 3_600_000L, // default 1h if not specified
                     source = source,
                     locationNames = locations,
-                    colorHex = when (severity) {
-                        AlertSeverity.MINOR -> "2196F3"
-                        AlertSeverity.MODERATE -> "FFC107"
-                        AlertSeverity.SEVERE -> "FF9800"
-                        AlertSeverity.EXTREME -> "F44336"
-                    }
+                    colorHex = severity.toHexColor()
                 )
             }
         } catch (e: Exception) {
@@ -239,12 +234,7 @@ class AlertRepository {
                                 endTime = parseIsoDateTime(expires) ?: (now + 3_600_000L),
                                 source = "MeteoAlarm",
                                 locationNames = listOf(areaDesc).filter { it.isNotEmpty() },
-                                colorHex = when (severity) {
-                                    AlertSeverity.MINOR -> "2196F3"
-                                    AlertSeverity.MODERATE -> "FFC107"
-                                    AlertSeverity.SEVERE -> "FF9800"
-                                    AlertSeverity.EXTREME -> "F44336"
-                                }
+                                colorHex = severity.toHexColor()
                             )
                             alerts.add(alert)
                             inEntry = false

@@ -45,6 +45,7 @@ fun MapScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
     var mapView by remember { mutableStateOf<MapView?>(null) }
     var map by remember { mutableStateOf<MapLibreMap?>(null) }
+    var mapError by remember { mutableStateOf<String?>(null) }
 
     // Location permission (check both COARSE and FINE)
     val locationPermissionGranted by remember {
@@ -162,6 +163,9 @@ fun MapScreen(
                         )
                         onCreate(null)
                         mapView = this
+                        addOnDidFailLoadingMapListener { errorMessage ->
+                            mapError = errorMessage
+                        }
                         getMapAsync { mapLibreMap ->
                             map = mapLibreMap
                             mapLibreMap.setStyle("https://tiles.openfreemap.org/styles/liberty")
@@ -204,6 +208,36 @@ fun MapScreen(
                         .padding(top = 16.dp)
                         .size(32.dp)
                 )
+            }
+
+            // Map load error overlay with retry
+            if (mapError != null) {
+                Card(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(32.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer
+                    )
+                ) {
+                    Column(
+                        modifier = Modifier.padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = stringResource(R.string.map_load_error),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onErrorContainer
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Button(onClick = {
+                            mapError = null
+                            map?.setStyle("https://tiles.openfreemap.org/styles/liberty")
+                        }) {
+                            Text(stringResource(R.string.retry))
+                        }
+                    }
+                }
             }
 
             // Layer selector FAB

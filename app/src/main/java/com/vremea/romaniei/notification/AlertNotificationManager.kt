@@ -30,12 +30,7 @@ object AlertNotificationManager {
             if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
                 != PackageManager.PERMISSION_GRANTED) return
         }
-        val color = when (alert.severity) {
-            AlertSeverity.MINOR -> 0xFF2196F3.toInt()
-            AlertSeverity.MODERATE -> 0xFFFFC107.toInt()
-            AlertSeverity.SEVERE -> 0xFFFF9800.toInt()
-            AlertSeverity.EXTREME -> 0xFFF44336.toInt()
-        }
+        val color = alert.severity.toNotificationColor()
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_dialog_alert)
             .setContentTitle(alert.title)

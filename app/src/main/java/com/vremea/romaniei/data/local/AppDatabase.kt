@@ -4,22 +4,16 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.vremea.romaniei.data.local.dao.AlertDao
-import com.vremea.romaniei.data.local.dao.LocationDao
 import com.vremea.romaniei.data.local.dao.WeatherDao
-import com.vremea.romaniei.data.local.entity.AlertEntity
-import com.vremea.romaniei.data.local.entity.LocationEntity
 import com.vremea.romaniei.data.local.entity.WeatherEntity
 
 @Database(
-    entities = [WeatherEntity::class, AlertEntity::class, LocationEntity::class],
-    version = 1,
-    exportSchema = false
+    entities = [WeatherEntity::class],
+    version = 2,
+    exportSchema = false  // Set to true when Room compiler matches kotlinx-serialization version
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun weatherDao(): WeatherDao
-    abstract fun alertDao(): AlertDao
-    abstract fun locationDao(): LocationDao
 
     companion object {
         @Volatile private var INSTANCE: AppDatabase? = null

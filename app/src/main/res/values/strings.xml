@@ -81,6 +81,7 @@
     <string name="map_layer_precip_short">Pcp</string>
     <string name="map_layer_wind_short">Wind</string>
     <string name="map_layer_radar_short">Rad</string>
+    <string name="map_load_error">Failed to load the weather map. Check your connection and try again.</string>
     <string name="map_attribution">© OpenStreetMap contributors © MapLibre © RainViewer</string>
 
     <!-- Accessibility content descriptions -->

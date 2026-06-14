@@ -82,7 +82,23 @@ data class AlertData(
 )
 
 enum class AlertSeverity {
-    MINOR, MODERATE, SEVERE, EXTREME
+    MINOR, MODERATE, SEVERE, EXTREME;
+
+    /** RGB hex string (no leading #) for this severity — single source of truth. */
+    fun toHexColor(): String = when (this) {
+        MINOR -> "2196F3"
+        MODERATE -> "FFC107"
+        SEVERE -> "FF9800"
+        EXTREME -> "F44336"
+    }
+
+    /** ARGB int for Android NotificationCompat.Builder.setColor(). */
+    fun toNotificationColor(): Int = when (this) {
+        MINOR -> 0xFF2196F3.toInt()
+        MODERATE -> 0xFFFFC107.toInt()
+        SEVERE -> 0xFFFF9800.toInt()
+        EXTREME -> 0xFFF44336.toInt()
+    }
 }
 
 data class AirQuality(

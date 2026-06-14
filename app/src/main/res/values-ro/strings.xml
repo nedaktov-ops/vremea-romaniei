@@ -82,6 +82,7 @@
     <string name="map_layer_precip_short">Plm</string>
     <string name="map_layer_wind_short">Vânt</string>
     <string name="map_layer_radar_short">Rad</string>
+    <string name="map_load_error">Harta meteo nu s-a putut încărca. Verifică conexiunea și încearcă din nou.</string>
     <string name="map_attribution">© Contribuitori OpenStreetMap © MapLibre © RainViewer</string>
 
     <!-- Accessibility content descriptions -->

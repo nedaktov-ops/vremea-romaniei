@@ -2,7 +2,7 @@ package com.vremea.romaniei.domain.model
 
 object WeatherCode {
 
-    fun getDescription(code: Int, ro: Boolean = false): String {
+    fun getDescription(code: Int, ro: Boolean = java.util.Locale.getDefault().language == "ro"): String {
         val lang = if (ro) roDescriptions else enDescriptions
         return lang[code] ?: (if (ro) "Necunoscut" else "Unknown")
     }

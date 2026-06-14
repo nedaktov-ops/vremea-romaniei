@@ -2,9 +2,10 @@ package com.vremea.romaniei.ui.screens.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.vremea.romaniei.data.local.PreferencesDataStore
+import com.vremea.romaniei.R
 import com.vremea.romaniei.data.repository.WeatherRepository
 import com.vremea.romaniei.domain.model.WeatherData
+import com.vremea.romaniei.util.UiText
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -32,7 +33,9 @@ class HomeViewModel : ViewModel() {
                 }
                 .onFailure { error ->
                     _weatherState.value = WeatherUiState.Error(
-                        error.message ?: "Failed to load weather data"
+                        UiText.DynamicString(error.message ?: "")
+                            .takeIf { error.message != null }
+                            ?: UiText.StringResource(R.string.error_message)
                     )
                 }
         }
@@ -53,5 +56,5 @@ class HomeViewModel : ViewModel() {
 sealed class WeatherUiState {
     data object Loading : WeatherUiState()
     data class Success(val data: WeatherData) : WeatherUiState()
-    data class Error(val message: String) : WeatherUiState()
+    data class Error(val message: UiText) : WeatherUiState()
 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vremea.romaniei.data.repository.AlertRepository
 import com.vremea.romaniei.domain.model.AlertData
+import com.vremea.romaniei.util.UiText
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -43,5 +44,5 @@ class AlertsViewModel : ViewModel() {
 sealed class AlertsUiState {
     data object Loading : AlertsUiState()
     data class Success(val alerts: List<AlertData>) : AlertsUiState()
-    data class Error(val message: String) : AlertsUiState()
+    data class Error(val message: UiText) : AlertsUiState()
 }

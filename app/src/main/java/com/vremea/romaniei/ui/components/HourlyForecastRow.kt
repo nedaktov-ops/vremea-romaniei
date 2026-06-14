@@ -8,6 +8,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.vremea.romaniei.R
@@ -62,6 +64,16 @@ private fun HourlyItem(hour: HourlyWeather) {
 
         Spacer(modifier = Modifier.height(4.dp))
 
+        val hourIconCd = when (hour.weatherIcon) {
+            "sunny", "mostly_sunny" -> stringResource(R.string.cd_clear_sky)
+            "partly_cloudy" -> stringResource(R.string.cd_partly_cloudy)
+            "overcast" -> stringResource(R.string.cd_overcast)
+            "foggy" -> stringResource(R.string.cd_foggy)
+            "drizzle", "rainy" -> stringResource(R.string.cd_rain)
+            "snowy" -> stringResource(R.string.cd_snow)
+            "thunderstorm" -> stringResource(R.string.cd_thunderstorm)
+            else -> stringResource(R.string.cd_fair_weather)
+        }
         Text(
             text = when (hour.weatherIcon) {
                 "sunny", "mostly_sunny" -> "☀️"
@@ -73,7 +85,8 @@ private fun HourlyItem(hour: HourlyWeather) {
                 "thunderstorm" -> "⛈️"
                 else -> "🌤️"
             },
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.clearAndSetSemantics { contentDescription = hourIconCd }
         )
 
         Spacer(modifier = Modifier.height(4.dp))

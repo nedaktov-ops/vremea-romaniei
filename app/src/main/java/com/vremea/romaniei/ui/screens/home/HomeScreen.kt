@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.vremea.romaniei.R
+import com.vremea.romaniei.util.UiText
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.vremea.romaniei.data.location.LocationHelper
 import kotlinx.coroutines.tasks.await
@@ -133,7 +134,9 @@ fun HomeScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = state.message.ifEmpty { stringResource(R.string.error_message) },
+                            text = (state.message as? UiText.StringResource)?.let { stringResource(it.resId, *it.args.toTypedArray()) }
+                                ?: (state.message as? UiText.DynamicString)?.value
+                                ?: stringResource(R.string.error_message),
                             style = MaterialTheme.typography.bodyLarge,
                             textAlign = TextAlign.Center,
                             color = MaterialTheme.colorScheme.error

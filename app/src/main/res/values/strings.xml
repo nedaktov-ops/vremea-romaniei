@@ -83,6 +83,20 @@
     <string name="map_layer_radar_short">Rad</string>
     <string name="map_attribution">© OpenStreetMap contributors © MapLibre © RainViewer</string>
 
+    <!-- Accessibility content descriptions -->
+    <string name="cd_clear_sky">Clear sky</string>
+    <string name="cd_partly_cloudy">Partly cloudy</string>
+    <string name="cd_overcast">Overcast</string>
+    <string name="cd_foggy">Foggy</string>
+    <string name="cd_rain">Rain</string>
+    <string name="cd_snow">Snow</string>
+    <string name="cd_thunderstorm">Thunderstorm</string>
+    <string name="cd_fair_weather">Fair weather</string>
+    <string name="cd_alert_minor">Information</string>
+    <string name="cd_alert_moderate">Warning</string>
+    <string name="cd_alert_severe">Severe alert</string>
+    <string name="cd_alert_extreme">Extreme alert</string>
+
     <!-- Alerts -->
     <string name="no_alerts">No active alerts</string>
 

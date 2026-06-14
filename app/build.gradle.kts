@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -21,10 +23,23 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("keystore.jks")
-            storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "vremea123"
-            keyAlias = System.getenv("KEY_ALIAS") ?: "vremea"
-            keyPassword = System.getenv("KEY_PASSWORD") ?: "vremea123"
+            val keystorePropsFile = rootProject.file("keystore.properties")
+            val props = if (keystorePropsFile.exists()) {
+                Properties().apply { load(keystorePropsFile.inputStream()) }
+            } else null
+
+            fun propsOrEnv(key: String, envVar: String, default: String): String {
+                return props?.getProperty(key) ?: System.getenv(envVar) ?: default
+            }
+
+            val hasKeystore = rootProject.file("keystore.jks").exists()
+            storeFile = file(propsOrEnv("storeFile", "STORE_FILE", "keystore.jks"))
+            storePassword = propsOrEnv("storePassword", "KEYSTORE_PASSWORD",
+                if (hasKeystore) error("Set KEYSTORE_PASSWORD env var or create keystore.properties") else "")
+            keyAlias = propsOrEnv("keyAlias", "KEY_ALIAS",
+                if (hasKeystore) error("Set KEY_ALIAS env var or create keystore.properties") else "")
+            keyPassword = propsOrEnv("keyPassword", "KEY_PASSWORD",
+                if (hasKeystore) error("Set KEY_PASSWORD env var or create keystore.properties") else "")
         }
     }
 
@@ -107,17 +122,11 @@ dependencies {
     // DataStore for preferences
     implementation("androidx.datastore:datastore-preferences:1.1.1")
 
-    // Coil for image loading
-    implementation("io.coil-kt:coil-compose:2.7.0")
-
     // WorkManager for background updates
     implementation("androidx.work:work-runtime-ktx:2.11.1")
 
     // MapLibre for weather maps (uses native Android SDK via AndroidView)
     implementation("org.maplibre.gl:android-sdk:13.2.0")
-
-    // Lottie for animations
-    implementation("com.airbnb.android:lottie-compose:6.6.2")
 
     // Location services
     implementation("com.google.android.gms:play-services-location:21.3.0")

@@ -7,6 +7,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.vremea.romaniei.R
@@ -31,6 +33,12 @@ fun AlertBanner(alert: AlertData) {
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
+                val severityCd = when (alert.severity) {
+                    AlertSeverity.MINOR -> stringResource(R.string.cd_alert_minor)
+                    AlertSeverity.MODERATE -> stringResource(R.string.cd_alert_moderate)
+                    AlertSeverity.SEVERE -> stringResource(R.string.cd_alert_severe)
+                    AlertSeverity.EXTREME -> stringResource(R.string.cd_alert_extreme)
+                }
                 Text(
                     text = when (alert.severity) {
                         AlertSeverity.MINOR -> "ℹ️"
@@ -38,7 +46,8 @@ fun AlertBanner(alert: AlertData) {
                         AlertSeverity.SEVERE -> "🔶"
                         AlertSeverity.EXTREME -> "🔴"
                     },
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.clearAndSetSemantics { contentDescription = severityCd }
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Column {

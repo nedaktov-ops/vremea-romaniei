@@ -9,6 +9,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+
 import com.vremea.romaniei.R
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
@@ -35,6 +38,16 @@ fun CurrentWeatherCard(weather: WeatherData) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Weather icon placeholder
+            val weatherIconCd = when (current.weatherIcon) {
+                "sunny", "mostly_sunny" -> stringResource(R.string.cd_clear_sky)
+                "partly_cloudy" -> stringResource(R.string.cd_partly_cloudy)
+                "overcast" -> stringResource(R.string.cd_overcast)
+                "foggy" -> stringResource(R.string.cd_foggy)
+                "drizzle", "rainy" -> stringResource(R.string.cd_rain)
+                "snowy" -> stringResource(R.string.cd_snow)
+                "thunderstorm" -> stringResource(R.string.cd_thunderstorm)
+                else -> stringResource(R.string.cd_fair_weather)
+            }
             Text(
                 text = when (current.weatherIcon) {
                     "sunny", "mostly_sunny" -> "☀️"
@@ -46,7 +59,8 @@ fun CurrentWeatherCard(weather: WeatherData) {
                     "thunderstorm" -> "⛈️"
                     else -> "🌤️"
                 },
-                style = MaterialTheme.typography.displayLarge
+                style = MaterialTheme.typography.displayLarge,
+                modifier = Modifier.clearAndSetSemantics { contentDescription = weatherIconCd }
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -81,10 +95,10 @@ fun CurrentWeatherCard(weather: WeatherData) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                WeatherChip("💧", "${current.humidity}%", stringResource(R.string.humidity))
-                WeatherChip("💨", "${current.windSpeed.toInt()} km/h", stringResource(R.string.wind))
-                WeatherChip("☁️", "${current.cloudCover}%", stringResource(R.string.cloud_cover))
-                WeatherChip("👁️", "${(current.visibility / 1000).toInt()} km", stringResource(R.string.visibility))
+                WeatherChip(emoji = "💧", value = "${current.humidity}%", label = stringResource(R.string.humidity))
+                WeatherChip(emoji = "💨", value = "${current.windSpeed.toInt()} km/h", label = stringResource(R.string.wind))
+                WeatherChip(emoji = "☁️", value = "${current.cloudCover}%", label = stringResource(R.string.cloud_cover))
+                WeatherChip(emoji = "👁️", value = "${(current.visibility / 1000).toInt()} km", label = stringResource(R.string.visibility))
             }
         }
     }

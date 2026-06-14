@@ -2,8 +2,10 @@ package com.vremea.romaniei.ui.screens.forecast
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vremea.romaniei.R
 import com.vremea.romaniei.data.repository.WeatherRepository
 import com.vremea.romaniei.domain.model.WeatherData
+import com.vremea.romaniei.util.UiText
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,7 +27,9 @@ class ForecastViewModel : ViewModel() {
                 }
                 .onFailure { error ->
                     _forecastState.value = ForecastUiState.Error(
-                        error.message ?: "Failed to load forecast"
+                        UiText.DynamicString(error.message ?: "")
+                            .takeIf { error.message != null }
+                            ?: UiText.StringResource(R.string.error_message)
                     )
                 }
         }
@@ -35,5 +39,5 @@ class ForecastViewModel : ViewModel() {
 sealed class ForecastUiState {
     data object Loading : ForecastUiState()
     data class Success(val data: WeatherData) : ForecastUiState()
-    data class Error(val message: String) : ForecastUiState()
+    data class Error(val message: UiText) : ForecastUiState()
 }

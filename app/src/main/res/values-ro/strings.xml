@@ -84,6 +84,20 @@
     <string name="map_layer_radar_short">Rad</string>
     <string name="map_attribution">© Contribuitori OpenStreetMap © MapLibre © RainViewer</string>
 
+    <!-- Accessibility content descriptions -->
+    <string name="cd_clear_sky">Cer senin</string>
+    <string name="cd_partly_cloudy">Parțial noros</string>
+    <string name="cd_overcast">Acoperit</string>
+    <string name="cd_foggy">Ceață</string>
+    <string name="cd_rain">Ploaie</string>
+    <string name="cd_snow">Zăpadă</string>
+    <string name="cd_thunderstorm">Furtună</string>
+    <string name="cd_fair_weather">Vreme frumoasă</string>
+    <string name="cd_alert_minor">Informare</string>
+    <string name="cd_alert_moderate">Atenționare</string>
+    <string name="cd_alert_severe">Alertă severă</string>
+    <string name="cd_alert_extreme">Alertă extremă</string>
+
     <!-- Alerts -->
     <string name="no_alerts">Nicio alertă activă</string>
 

@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.vremea.romaniei.R
+import com.vremea.romaniei.util.UiText
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.vremea.romaniei.data.location.LocationHelper
@@ -41,9 +42,10 @@ fun ForecastScreen(
         )
     }
 
+    var locationPermissionGrantedState by remember { mutableStateOf(locationPermissionGranted) }
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
-    ) { _ -> }
+    ) { granted -> locationPermissionGrantedState = granted }
 
     var hasRequestedLocation by remember { mutableStateOf(false) }
 
@@ -74,7 +76,7 @@ fun ForecastScreen(
                 title = { Text(stringResource(R.string.daily_forecast)) },
                 actions = {
                     IconButton(onClick = {
-                        if (!locationPermissionGranted) {
+                        if (!locationPermissionGrantedState) {
                             locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
                         } else {
                             val helper = LocationHelper(context)
@@ -103,7 +105,9 @@ fun ForecastScreen(
                 }
                 is ForecastUiState.Error -> {
                     Text(
-                        text = state.message,
+                        text = (state.message as? UiText.StringResource)?.let { stringResource(it.resId) }
+                            ?: (state.message as? UiText.DynamicString)?.value
+                            ?: "",
                         modifier = Modifier.align(Alignment.Center),
                         color = MaterialTheme.colorScheme.error,
                         textAlign = TextAlign.Center

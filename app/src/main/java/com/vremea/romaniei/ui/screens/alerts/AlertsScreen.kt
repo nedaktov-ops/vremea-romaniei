@@ -8,12 +8,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.vremea.romaniei.R
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.vremea.romaniei.ui.components.AlertBanner
+import com.vremea.romaniei.util.UiText
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,9 +59,11 @@ fun AlertsScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                val allClearDesc = stringResource(R.string.no_alerts)
                                 Text(
                                     text = "☀️",
-                                    style = MaterialTheme.typography.displayMedium
+                                    style = MaterialTheme.typography.displayMedium,
+                                    modifier = Modifier.clearAndSetSemantics { contentDescription = allClearDesc }
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Text(
@@ -91,7 +96,9 @@ fun AlertsScreen(
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
-                                text = s.message,
+                                text = (s.message as? UiText.StringResource)?.let { stringResource(it.resId) }
+                                    ?: (s.message as? UiText.DynamicString)?.value
+                                    ?: "",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.error
                             )

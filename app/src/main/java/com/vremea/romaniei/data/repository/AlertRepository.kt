@@ -1,8 +1,6 @@
 package com.vremea.romaniei.data.repository
 
 import android.util.Log
-import com.vremea.romaniei.data.local.entity.AlertEntity
-import com.vremea.romaniei.data.local.dao.AlertDao
 import com.vremea.romaniei.data.remote.NetworkClient
 import com.vremea.romaniei.domain.model.AlertData
 import com.vremea.romaniei.domain.model.AlertSeverity

@@ -50,9 +50,10 @@ fun MapScreen(
     val locationPermissionGranted by remember {
         mutableStateOf(LocationHelper.isLocationPermissionGranted(context))
     }
+    var locationPermissionGrantedState by remember { mutableStateOf(locationPermissionGranted) }
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
-    ) { _ -> }
+    ) { grantedMap -> locationPermissionGrantedState = grantedMap.values.any { it } }
 
     // Try to get user location on first launch
     LaunchedEffect(Unit) {
@@ -114,7 +115,7 @@ fun MapScreen(
                 title = { Text(stringResource(R.string.weather_map)) },
                 actions = {
                     IconButton(onClick = {
-                        if (!locationPermissionGranted) {
+                        if (!locationPermissionGrantedState) {
                             locationPermissionLauncher.launch(
                                 arrayOf(
                                     Manifest.permission.ACCESS_FINE_LOCATION,

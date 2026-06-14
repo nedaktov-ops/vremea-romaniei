@@ -6,16 +6,22 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.vremea.romaniei.R
 import com.vremea.romaniei.domain.model.DailyWeather
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
 fun DailyForecastCard(day: DailyWeather) {
-    val daySdf = remember { SimpleDateFormat("EEEE", Locale("ro")) }
-    val dateSdf = remember { SimpleDateFormat("d MMM", Locale("ro")) }
+    val currentLocale = LocalConfiguration.current.locales[0]
+    val daySdf = remember { SimpleDateFormat("EEEE", currentLocale) }
+    val dateSdf = remember { SimpleDateFormat("d MMM", currentLocale) }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -45,6 +51,16 @@ fun DailyForecastCard(day: DailyWeather) {
             }
 
             // Weather icon
+            val weatherIconCd = when (day.weatherIcon) {
+                "sunny", "mostly_sunny" -> stringResource(R.string.cd_clear_sky)
+                "partly_cloudy" -> stringResource(R.string.cd_partly_cloudy)
+                "overcast" -> stringResource(R.string.cd_overcast)
+                "foggy" -> stringResource(R.string.cd_foggy)
+                "drizzle", "rainy" -> stringResource(R.string.cd_rain)
+                "snowy" -> stringResource(R.string.cd_snow)
+                "thunderstorm" -> stringResource(R.string.cd_thunderstorm)
+                else -> stringResource(R.string.cd_fair_weather)
+            }
             Text(
                 text = when (day.weatherIcon) {
                     "sunny" -> "☀️"
@@ -59,6 +75,7 @@ fun DailyForecastCard(day: DailyWeather) {
                 },
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(horizontal = 8.dp)
+                    .clearAndSetSemantics { contentDescription = weatherIconCd }
             )
 
             // Description

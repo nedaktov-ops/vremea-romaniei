@@ -1,6 +1,7 @@
 package com.vremea.romaniei.data.local
 
 import android.content.Context
+import android.content.pm.ServiceInfo
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.work.CoroutineWorker
@@ -27,7 +28,7 @@ class AlertWorker(appContext: Context, params: WorkerParameters) : CoroutineWork
             .setSmallIcon(android.R.drawable.ic_dialog_info)
             .setOngoing(true).setPriority(NotificationCompat.PRIORITY_LOW)
             .build()
-        return ForegroundInfo(NOTIFICATION_ID, notification)
+        return ForegroundInfo(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
     }
     companion object {
         private const val TAG = "AlertWorker"

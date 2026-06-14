@@ -36,37 +36,37 @@ data class CurrentWeatherDto(
 @Serializable
 data class HourlyDataDto(
     val time: List<String>? = null,
-    @SerialName("temperature_2m") val temperature2m: List<Double>? = null,
-    @SerialName("apparent_temperature") val apparentTemperature: List<Double>? = null,
-    @SerialName("precipitation") val precipitation: List<Double>? = null,
-    @SerialName("precipitation_probability") val precipitationProbability: List<Int>? = null,
-    @SerialName("weather_code") val weatherCode: List<Int>? = null,
-    @SerialName("cloud_cover") val cloudCover: List<Int>? = null,
-    @SerialName("pressure_msl") val pressureMsl: List<Double>? = null,
-    @SerialName("wind_speed_10m") val windSpeed10m: List<Double>? = null,
-    @SerialName("wind_direction_10m") val windDirection10m: List<Int>? = null,
-    @SerialName("wind_gusts_10m") val windGusts10m: List<Double>? = null,
-    @SerialName("visibility") val visibility: List<Double>? = null,
-    @SerialName("uv_index") val uvIndex: List<Double>? = null,
-    @SerialName("relative_humidity_2m") val relativeHumidity2m: List<Int>? = null
+    @SerialName("temperature_2m") val temperature2m: List<Double?>? = null,
+    @SerialName("apparent_temperature") val apparentTemperature: List<Double?>? = null,
+    @SerialName("precipitation") val precipitation: List<Double?>? = null,
+    @SerialName("precipitation_probability") val precipitationProbability: List<Int?>? = null,
+    @SerialName("weather_code") val weatherCode: List<Int?>? = null,
+    @SerialName("cloud_cover") val cloudCover: List<Int?>? = null,
+    @SerialName("pressure_msl") val pressureMsl: List<Double?>? = null,
+    @SerialName("wind_speed_10m") val windSpeed10m: List<Double?>? = null,
+    @SerialName("wind_direction_10m") val windDirection10m: List<Int?>? = null,
+    @SerialName("wind_gusts_10m") val windGusts10m: List<Double?>? = null,
+    @SerialName("visibility") val visibility: List<Double?>? = null,
+    @SerialName("uv_index") val uvIndex: List<Double?>? = null,
+    @SerialName("relative_humidity_2m") val relativeHumidity2m: List<Int?>? = null
 )
 
 @Serializable
 data class DailyDataDto(
     val time: List<String>? = null,
-    @SerialName("weather_code") val weatherCode: List<Int>? = null,
-    @SerialName("temperature_2m_max") val temperature2mMax: List<Double>? = null,
-    @SerialName("temperature_2m_min") val temperature2mMin: List<Double>? = null,
-    @SerialName("apparent_temperature_max") val apparentTemperatureMax: List<Double>? = null,
-    @SerialName("apparent_temperature_min") val apparentTemperatureMin: List<Double>? = null,
+    @SerialName("weather_code") val weatherCode: List<Int?>? = null,
+    @SerialName("temperature_2m_max") val temperature2mMax: List<Double?>? = null,
+    @SerialName("temperature_2m_min") val temperature2mMin: List<Double?>? = null,
+    @SerialName("apparent_temperature_max") val apparentTemperatureMax: List<Double?>? = null,
+    @SerialName("apparent_temperature_min") val apparentTemperatureMin: List<Double?>? = null,
     @SerialName("sunrise") val sunrise: List<String>? = null,
     @SerialName("sunset") val sunset: List<String>? = null,
-    @SerialName("precipitation_sum") val precipitationSum: List<Double>? = null,
-    @SerialName("precipitation_probability_max") val precipitationProbabilityMax: List<Int>? = null,
-    @SerialName("wind_speed_10m_max") val windSpeed10mMax: List<Double>? = null,
-    @SerialName("wind_gusts_10m_max") val windGusts10mMax: List<Double>? = null,
-    @SerialName("wind_direction_10m_dominant") val windDirection10mDominant: List<Int>? = null,
-    @SerialName("uv_index_max") val uvIndexMax: List<Double>? = null
+    @SerialName("precipitation_sum") val precipitationSum: List<Double?>? = null,
+    @SerialName("precipitation_probability_max") val precipitationProbabilityMax: List<Int?>? = null,
+    @SerialName("wind_speed_10m_max") val windSpeed10mMax: List<Double?>? = null,
+    @SerialName("wind_gusts_10m_max") val windGusts10mMax: List<Double?>? = null,
+    @SerialName("wind_direction_10m_dominant") val windDirection10mDominant: List<Int?>? = null,
+    @SerialName("uv_index_max") val uvIndexMax: List<Double?>? = null
 )
 
 @Serializable

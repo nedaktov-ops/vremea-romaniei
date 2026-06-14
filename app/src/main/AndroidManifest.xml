@@ -29,9 +29,16 @@
             </intent-filter>
         </activity>
 
-        <!-- WorkManager workers (WeatherUpdateWorker, AlertWorker) are NOT
-             declared here — WorkManager handles them internally via its own
-             system service. Only BroadcastReceivers go in the manifest. -->
+        <!-- WorkManager's internal foreground service used by WeatherUpdateWorker
+             and AlertWorker for setForeground(). Android 15 (targetSDK=35) requires
+             android:foregroundServiceType="dataSync" or it crashes on launch. -->
+        <service
+            android:name="androidx.work.impl.foreground.SystemForegroundService"
+            android:foregroundServiceType="dataSync"
+            android:exported="false" />
+
+        <!-- Workers themselves don't go in the manifest — WorkManager resolves them
+             internally via WorkerParameters. Only BroadcastReceivers go here. -->
         <receiver
             android:name=".data.local.BootReceiver"
             android:exported="true">

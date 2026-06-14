@@ -10,6 +10,8 @@ AuthorEmail: nedaktov@users.noreply.github.com
 SourceCode: https://github.com/nedaktov-ops/vremea-romaniei
 IssueTracker: https://github.com/nedaktov-ops/vremea-romaniei/issues
 Changelog: https://github.com/nedaktov-ops/vremea-romaniei/releases
+CurrentVersion: 1.1.0
+CurrentVersionCode: 2
 
 AutoName: VremeaRomâniei
 Name:
